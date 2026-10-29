@@ -1,0 +1,1003 @@
+<!DOCTYPE html>
+<html lang="id" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RoyalVegas — Judi Simulator Game v1.0 (Simulasi Kasino Virtual)</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <!-- Google Fonts: Inter & Cinzel for Casino Luxury feel -->
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800&family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+
+
+    <!-- Tailwind Configuration -->
+    <script src="js/tailwind-config.js"></script>
+
+    <!-- Custom Casino Stylesheet -->
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="min-h-screen flex flex-col selection:bg-casino-gold selection:text-casino-bg">
+
+    <!-- TOP SIMULATION DISCLAIMER BAR (PRD Sec 1 & 6) -->
+    <div class="bg-gradient-to-r from-purple-950 via-amber-950/60 to-purple-950 border-b border-amber-500/30 px-4 py-1.5 text-center text-xs sm:text-sm flex flex-wrap items-center justify-center gap-2">
+        <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-amber-500/20 text-amber-300 font-semibold border border-amber-400/40">
+            <i class="fa-solid fa-shield-halved"></i> SIMULASI EDUKASI & HIBURAN v1.0
+        </span>
+        <span class="text-gray-300">
+            Seluruh koin di aplikasi ini adalah <strong>100% Mata Uang Virtual Simulasi</strong>. Tidak ada deposit, penarikan, atau transaksi uang sungguhan.
+        </span>
+    </div>
+
+    <!-- MAIN NAVBAR -->
+    <header class="sticky top-0 z-40 backdrop-blur-xl bg-casino-bg/90 border-b border-casino-border">
+        <div class="max-w-7xl mx-auto px-3 sm:px-6 py-3 flex flex-wrap items-center justify-between gap-3">
+            
+            <!-- Brand Logo -->
+            <div class="flex items-center gap-3 cursor-pointer" onclick="switchMainView('lobby')">
+                <div class="w-11 h-11 rounded-xl bg-gradient-to-br from-amber-400 via-amber-500 to-purple-700 p-0.5 shadow-lg shadow-amber-500/20">
+                    <div class="w-full h-full bg-casino-bg rounded-[10px] flex items-center justify-center">
+                        <i class="fa-solid fa-crown text-xl text-amber-400"></i>
+                    </div>
+                </div>
+                <div>
+                    <div class="flex items-center gap-2">
+                        <h1 class="font-display font-bold text-lg sm:text-xl tracking-wider gold-gradient-text">ROYAL VEGAS</h1>
+                        <span class="text-[10px] font-mono uppercase px-2 py-0.5 rounded bg-purple-500/20 text-purple-300 border border-purple-500/30">PRD v1.0</span>
+                    </div>
+                    <p class="text-[11px] text-gray-400 hidden sm:block">Virtual Casino & Probability Simulator</p>
+                </div>
+            </div>
+
+            <!-- Center Navigation Pills -->
+            <nav class="flex items-center gap-1 sm:gap-1.5 bg-casino-card p-1.5 rounded-xl border border-casino-border overflow-x-auto max-w-full">
+                <button onclick="switchMainView('lobby')" id="nav-lobby" class="nav-tab px-3 py-1.5 rounded-lg text-xs sm:text-sm font-medium transition flex items-center gap-1.5">
+                    <i class="fa-solid fa-gamepad"></i> <span>Lobby & Game</span>
+                </button>
+                <button onclick="switchMainView('stats')" id="nav-stats" class="nav-tab px-3 py-1.5 rounded-lg text-xs sm:text-sm font-medium transition flex items-center gap-1.5">
+                    <i class="fa-solid fa-chart-pie"></i> <span>Statistik & Riwayat</span>
+                </button>
+                <button onclick="switchMainView('rewards')" id="nav-rewards" class="nav-tab px-3 py-1.5 rounded-lg text-xs sm:text-sm font-medium transition flex items-center gap-1.5">
+                    <i class="fa-solid fa-trophy"></i> <span>Misi & Leaderboard</span>
+                </button>
+                <button onclick="switchMainView('admin')" id="nav-admin" class="nav-tab px-3 py-1.5 rounded-lg text-xs sm:text-sm font-medium transition flex items-center gap-1.5">
+                    <i class="fa-solid fa-user-shield text-amber-400"></i> <span>Admin Dashboard</span>
+                </button>
+            </nav>
+
+            <!-- Right Wallet & User Controls -->
+            <div class="flex items-center gap-2 sm:gap-3">
+                <!-- Virtual Balance Pill -->
+                <div class="flex items-center gap-2 bg-gradient-to-r from-amber-500/15 to-purple-900/40 border border-amber-400/40 rounded-xl px-3 py-1.5 gold-glow">
+                    <i class="fa-solid fa-coins text-amber-400 text-base sm:text-lg animate-bounce"></i>
+                    <div>
+                        <div class="text-[10px] uppercase tracking-wider text-amber-200/70 leading-none">Saldo Virtual</div>
+                        <div id="headerBalance" class="font-mono font-bold text-sm sm:text-base text-amber-300">10.000</div>
+                    </div>
+                    <button onclick="openDailyBonusModal()" title="Klaim Bonus Harian / Bantuan Koin" class="ml-1 w-7 h-7 rounded-lg bg-amber-400 hover:bg-amber-300 text-casino-bg flex items-center justify-center font-bold text-xs transition">
+                        <i class="fa-solid fa-plus"></i>
+                    </button>
+                </div>
+
+                <!-- Sound Toggle -->
+                <button onclick="toggleSound()" id="soundBtn" title="Efek Suara" class="w-9 h-9 rounded-xl bg-casino-card hover:bg-casino-surface border border-casino-border flex items-center justify-center text-gray-300 hover:text-amber-400 transition">
+                    <i id="soundIcon" class="fa-solid fa-volume-high"></i>
+                </button>
+
+                <!-- User Profile / Auth Trigger -->
+                <button onclick="openAuthModal()" class="flex items-center gap-2 bg-casino-card hover:bg-casino-surface border border-casino-border rounded-xl px-3 py-1.5 transition">
+                    <div id="userAvatarBadge" class="w-7 h-7 rounded-lg bg-gradient-to-tr from-purple-600 to-amber-500 flex items-center justify-center text-xs font-bold text-white">
+                        VIP
+                    </div>
+                    <div class="text-left hidden md:block">
+                        <div id="headerUsername" class="text-xs font-semibold text-white leading-tight">Sultan_Virtual</div>
+                        <div id="headerUserLevel" class="text-[10px] text-amber-400 font-mono">Lv.1 • Member</div>
+                    </div>
+                    <i class="fa-solid fa-chevron-down text-[10px] text-gray-400"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- MAIN CONTENT CONTAINER -->
+    <main class="flex-1 max-w-7xl w-full mx-auto px-3 sm:px-6 py-6 space-y-6">
+
+        <!-- ACCOUNT SUSPENDED BANNER (Shown if Admin suspends current user) -->
+        <div id="suspendedBanner" class="hidden bg-red-950/90 border-2 border-red-500 rounded-2xl p-4 flex items-center justify-between gap-4">
+            <div class="flex items-center gap-3">
+                <i class="fa-solid fa-ban text-2xl text-red-400"></i>
+                <div>
+                    <h4 class="font-bold text-red-200">Akun Anda Sedang Ditangguhkan (Suspended) oleh Admin</h4>
+                    <p class="text-xs text-red-300">Sesuai Business Rules PRD, akun yang berstatus Suspended tidak dapat memasang taruhan baru. Buka tab Admin Dashboard untuk mengaktifkan kembali akun ini.</p>
+                </div>
+            </div>
+            <button onclick="switchMainView('admin')" class="px-3 py-1.5 rounded-lg bg-red-500 hover:bg-red-400 text-white text-xs font-bold shrink-0">
+                Buka Admin
+            </button>
+        </div>
+
+        <!-- ========================================================= -->
+        <!-- VIEW 1: LOBBY & INTERACTIVE GAME AREA                     -->
+        <!-- ========================================================= -->
+        <section id="view-lobby" class="space-y-6">
+            
+            <!-- Top Hero Summary Bar (Wallet, Level, Daily Bonus, Quick Stats) -->
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-4">
+                
+                <!-- Welcome & Level Card -->
+                <div class="lg:col-span-5 bg-gradient-to-br from-casino-surface via-casino-card to-purple-950/50 border border-casino-border rounded-2xl p-5 flex flex-col justify-between relative overflow-hidden">
+                    <div class="absolute -right-8 -bottom-8 opacity-10 pointer-events-none">
+                        <i class="fa-solid fa-dice text-9xl text-amber-400"></i>
+                    </div>
+                    <div class="flex items-start justify-between gap-3">
+                        <div>
+                            <span class="text-xs uppercase tracking-wider text-purple-300 font-semibold">Selamat Datang di Kasino Virtual</span>
+                            <h2 id="heroWelcomeName" class="font-display text-xl sm:text-2xl font-bold text-white mt-0.5">Sultan_Virtual</h2>
+                        </div>
+                        <span id="heroRoleBadge" class="px-2.5 py-1 rounded-full text-xs font-semibold bg-amber-500/20 text-amber-300 border border-amber-400/30">
+                            <i class="fa-solid fa-star mr-1"></i>Level 1
+                        </span>
+                    </div>
+
+                    <!-- XP Progress Bar -->
+                    <div class="mt-4 space-y-1.5">
+                        <div class="flex justify-between text-xs">
+                            <span class="text-gray-300">Progres XP Level</span>
+                            <span id="xpText" class="font-mono text-amber-300">0 / 500 XP</span>
+                        </div>
+                        <div class="w-full h-2.5 bg-casino-bg rounded-full overflow-hidden border border-casino-border">
+                            <div id="xpProgressBar" class="h-full bg-gradient-to-r from-purple-500 via-pink-500 to-amber-400 transition-all duration-500" style="width: 5%"></div>
+                        </div>
+                        <p class="text-[11px] text-gray-400">Setiap permainan memberikan +25 XP (+50 XP jika menang).</p>
+                    </div>
+                </div>
+
+                <!-- Quick Player KPI Cards -->
+                <div class="lg:col-span-4 grid grid-cols-2 gap-3">
+                    <div class="bg-casino-card border border-casino-border rounded-2xl p-4 flex flex-col justify-between">
+                        <div class="flex items-center justify-between text-gray-400 text-xs">
+                            <span>Win Rate</span>
+                            <i class="fa-solid fa-percent text-purple-400"></i>
+                        </div>
+                        <div id="quickWinRate" class="text-2xl font-bold font-mono text-white mt-2">0%</div>
+                        <div id="quickWinLossSub" class="text-[11px] text-gray-400 mt-1">0 Menang • 0 Kalah</div>
+                    </div>
+
+                    <div class="bg-casino-card border border-casino-border rounded-2xl p-4 flex flex-col justify-between">
+                        <div class="flex items-center justify-between text-gray-400 text-xs">
+                            <span>Net Profit Koin</span>
+                            <i class="fa-solid fa-chart-line text-amber-400"></i>
+                        </div>
+                        <div id="quickNetProfit" class="text-2xl font-bold font-mono text-emerald-400 mt-2">0</div>
+                        <div id="quickTotalGamesSub" class="text-[11px] text-gray-400 mt-1">Total 0 Permainan</div>
+                    </div>
+                </div>
+
+                <!-- Daily Bonus & Free Refill Card -->
+                <div class="lg:col-span-3 bg-gradient-to-br from-amber-500/20 via-casino-card to-casino-card border border-amber-500/40 rounded-2xl p-4 flex flex-col justify-between">
+                    <div>
+                        <div class="flex items-center justify-between">
+                            <span class="text-xs font-bold uppercase tracking-wider text-amber-300">Bonus Harian</span>
+                            <span id="dailyBonusStatusBadge" class="px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">TERSEDIA</span>
+                        </div>
+                        <p class="text-xs text-gray-300 mt-1">Klaim <strong class="text-amber-300">+2.500 Koin Virtual</strong> setiap hari atau isi ulang saldo latihan kapan saja.</p>
+                    </div>
+                    <div class="flex gap-2 mt-3">
+                        <button onclick="claimDailyBonus()" id="btnClaimDaily" class="flex-1 btn-gold py-2 px-3 rounded-xl text-xs flex items-center justify-center gap-1.5">
+                            <i class="fa-solid fa-gift"></i> Klaim +2.500
+                        </button>
+                        <button onclick="claimFaucetAid()" title="Bantuan Koin Latihan (+5.000)" class="px-3 py-2 rounded-xl bg-casino-surface hover:bg-purple-900/50 border border-casino-border text-xs text-amber-300 font-semibold transition">
+                            +5K Reset
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- GAME MODE SELECTOR CARDS (4 Modes from PRD 4.3) -->
+            <div>
+                <div class="flex flex-wrap items-center justify-between gap-2 mb-3">
+                    <h3 class="font-display font-bold text-lg text-white flex items-center gap-2">
+                        <i class="fa-solid fa-clover text-amber-400"></i> Pilih Mode Permainan Kasino
+                    </h3>
+                    <span class="text-xs text-gray-400">Klik kartu permainan di bawah untuk mengganti meja aktif</span>
+                </div>
+
+                <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+                    <!-- Mode A: Slot Machine -->
+                    <button onclick="selectGameMode('slot')" id="card-game-slot" class="game-selector-card group text-left p-4 rounded-2xl border transition-all relative overflow-hidden">
+                        <div class="flex items-center justify-between mb-2">
+                            <div class="w-10 h-10 rounded-xl bg-amber-500/20 border border-amber-400/40 flex items-center justify-center text-xl">
+                                🎰
+                            </div>
+                            <span id="badge-status-slot" class="text-[10px] font-mono uppercase px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300">MVP • Aktif</span>
+                        </div>
+                        <h4 class="font-bold text-white group-hover:text-amber-300 transition">Slot Machine</h4>
+                        <p class="text-xs text-gray-400 mt-0.5">3-Reel Klasik • Hadiah s/d 25x</p>
+                    </button>
+
+                    <!-- Mode B: Dice -->
+                    <button onclick="selectGameMode('dice')" id="card-game-dice" class="game-selector-card group text-left p-4 rounded-2xl border transition-all relative overflow-hidden">
+                        <div class="flex items-center justify-between mb-2">
+                            <div class="w-10 h-10 rounded-xl bg-purple-500/20 border border-purple-400/40 flex items-center justify-center text-xl">
+                                🎲
+                            </div>
+                            <span id="badge-status-dice" class="text-[10px] font-mono uppercase px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300">MVP • Aktif</span>
+                        </div>
+                        <h4 class="font-bold text-white group-hover:text-amber-300 transition">Royal Dice</h4>
+                        <p class="text-xs text-gray-400 mt-0.5">2 Dadu 3D • Lucky 7 & Exact Sum</p>
+                    </button>
+
+                    <!-- Mode C: Roulette -->
+                    <button onclick="selectGameMode('roulette')" id="card-game-roulette" class="game-selector-card group text-left p-4 rounded-2xl border transition-all relative overflow-hidden">
+                        <div class="flex items-center justify-between mb-2">
+                            <div class="w-10 h-10 rounded-xl bg-rose-500/20 border border-rose-400/40 flex items-center justify-center text-xl">
+                                🎡
+                            </div>
+                            <span id="badge-status-roulette" class="text-[10px] font-mono uppercase px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300">Aktif • 35x</span>
+                        </div>
+                        <h4 class="font-bold text-white group-hover:text-amber-300 transition">European Roulette</h4>
+                        <p class="text-xs text-gray-400 mt-0.5">Roda 0-36 • Warna, Paritas & Nomor</p>
+                    </button>
+
+                    <!-- Mode D: Blackjack -->
+                    <button onclick="selectGameMode('blackjack')" id="card-game-blackjack" class="game-selector-card group text-left p-4 rounded-2xl border transition-all relative overflow-hidden">
+                        <div class="flex items-center justify-between mb-2">
+                            <div class="w-10 h-10 rounded-xl bg-sky-500/20 border border-sky-400/40 flex items-center justify-center text-xl">
+                                🃏
+                            </div>
+                            <span id="badge-status-blackjack" class="text-[10px] font-mono uppercase px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300">Aktif • 21</span>
+                        </div>
+                        <h4 class="font-bold text-white group-hover:text-amber-300 transition">Blackjack 21</h4>
+                        <p class="text-xs text-gray-400 mt-0.5">Lawan Dealer • Hit, Stand, Double</p>
+                    </button>
+                </div>
+            </div>
+
+            <!-- ACTIVE GAME WORKSPACE & BETTING PANEL (PRD Sec 7: Halaman Permainan) -->
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+                
+                <!-- LEFT 4 COLS: UNIFIED BETTING & WALLET AUDIT PANEL -->
+                <div class="lg:col-span-4 bg-casino-card border border-casino-border rounded-2xl p-5 space-y-5">
+                    <div class="flex items-center justify-between border-b border-casino-border pb-3">
+                        <div>
+                            <span class="text-[11px] uppercase tracking-wider text-purple-400 font-semibold">Panel Kontrol Taruhan</span>
+                            <h3 id="betPanelGameTitle" class="font-display font-bold text-lg text-white">Slot Machine</h3>
+                        </div>
+                        <span id="betPanelMaxBetBadge" class="text-xs font-mono px-2.5 py-1 rounded-lg bg-casino-surface border border-casino-border text-amber-300">
+                            Maks: 5.000
+                        </span>
+                    </div>
+
+                    <!-- Bet Amount Input -->
+                    <div class="space-y-2">
+                        <label class="text-xs font-medium text-gray-300 flex justify-between">
+                            <span>Jumlah Taruhan Virtual (Koin)</span>
+                            <button onclick="setBetAmount(state.currentUser.balance)" class="text-amber-400 hover:underline font-semibold">Saldo: <span id="betPanelAvailableBalance">10.000</span></button>
+                        </label>
+                        <div class="relative flex items-center">
+                            <span class="absolute left-3.5 text-amber-400"><i class="fa-solid fa-coins"></i></span>
+                            <input type="number" id="betInput" value="250" min="10" step="50"
+                                onchange="validateBetInput()"
+                                class="w-full pl-10 pr-20 py-3 rounded-xl bg-casino-bg border border-casino-border focus:border-amber-400 focus:outline-none font-mono font-bold text-lg text-white">
+                            <div class="absolute right-2 flex gap-1">
+                                <button onclick="multiplyBet(0.5)" class="px-2 py-1 rounded bg-casino-surface hover:bg-purple-800 text-xs font-mono text-gray-300">½</button>
+                                <button onclick="multiplyBet(2)" class="px-2 py-1 rounded bg-casino-surface hover:bg-purple-800 text-xs font-mono text-gray-300">2x</button>
+                            </div>
+                        </div>
+
+                        <!-- Quick Chip Buttons -->
+                        <div class="grid grid-cols-5 gap-1.5 pt-1">
+                            <button onclick="setBetAmount(100)" class="py-1.5 rounded-lg bg-casino-surface hover:bg-amber-500/20 border border-casino-border hover:border-amber-400/50 text-xs font-mono font-semibold text-gray-200 transition">100</button>
+                            <button onclick="setBetAmount(250)" class="py-1.5 rounded-lg bg-casino-surface hover:bg-amber-500/20 border border-casino-border hover:border-amber-400/50 text-xs font-mono font-semibold text-gray-200 transition">250</button>
+                            <button onclick="setBetAmount(500)" class="py-1.5 rounded-lg bg-casino-surface hover:bg-amber-500/20 border border-casino-border hover:border-amber-400/50 text-xs font-mono font-semibold text-gray-200 transition">500</button>
+                            <button onclick="setBetAmount(1000)" class="py-1.5 rounded-lg bg-casino-surface hover:bg-amber-500/20 border border-casino-border hover:border-amber-400/50 text-xs font-mono font-semibold text-gray-200 transition">1K</button>
+                            <button onclick="setMaxAllowedBet()" class="py-1.5 rounded-lg bg-amber-500/20 hover:bg-amber-500/30 border border-amber-400/50 text-xs font-mono font-bold text-amber-300 transition">MAX</button>
+                        </div>
+                    </div>
+
+                    <!-- Balance Before & After Audit Box (Explicitly required in PRD Sec 7) -->
+                    <div class="bg-casino-bg/90 border border-casino-border rounded-xl p-3.5 space-y-2.5">
+                        <div class="text-[11px] font-semibold uppercase tracking-wider text-gray-400 flex items-center justify-between">
+                            <span><i class="fa-solid fa-receipt text-amber-400 mr-1"></i> Audit Putaran Terakhir</span>
+                            <span id="lastRoundHash" class="font-mono text-[10px] text-purple-400">#RNG-READY</span>
+                        </div>
+                        <div class="grid grid-cols-2 gap-2 text-xs">
+                            <div class="bg-casino-card p-2.5 rounded-lg border border-casino-border/60">
+                                <div class="text-gray-400 text-[10px]">Saldo Sebelum</div>
+                                <div id="auditBalanceBefore" class="font-mono font-bold text-sm text-gray-200 mt-0.5">10.000</div>
+                            </div>
+                            <div class="bg-casino-card p-2.5 rounded-lg border border-casino-border/60">
+                                <div class="text-gray-400 text-[10px]">Saldo Sesudah</div>
+                                <div id="auditBalanceAfter" class="font-mono font-bold text-sm text-amber-300 mt-0.5">10.000</div>
+                            </div>
+                        </div>
+                        <div class="flex items-center justify-between text-xs pt-1 border-t border-casino-border/60">
+                            <span class="text-gray-400">Perubahan Bersih:</span>
+                            <span id="auditNetDelta" class="font-mono font-bold text-gray-300">0 Koin</span>
+                        </div>
+                    </div>
+
+                    <!-- Recent 4 Plays Mini Feed -->
+                    <div class="space-y-2">
+                        <div class="flex items-center justify-between text-xs">
+                            <span class="font-semibold text-gray-300">Riwayat Cepat (Live)</span>
+                            <button onclick="switchMainView('stats')" class="text-amber-400 hover:underline text-[11px]">Lihat Semua →</button>
+                        </div>
+                        <div id="miniHistoryList" class="space-y-1.5 max-h-40 overflow-y-auto pr-1">
+                            <!-- Injected via JS -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- RIGHT 8 COLS: INTERACTIVE GAME STAGE -->
+                <div class="lg:col-span-8 bg-casino-card border border-casino-border rounded-2xl p-5 sm:p-6 relative overflow-hidden min-h-[500px] flex flex-col justify-between">
+                    
+                    <!-- Live Result Banner inside Game Stage -->
+                    <div id="stageResultBanner" class="mb-4 px-4 py-3 rounded-xl bg-casino-surface border border-casino-border flex flex-wrap items-center justify-between gap-2">
+                        <div class="flex items-center gap-2.5">
+                            <span id="stageResultIcon" class="w-8 h-8 rounded-lg bg-amber-500/20 text-amber-300 flex items-center justify-center font-bold">
+                                <i class="fa-solid fa-sparkles"></i>
+                            </span>
+                            <div>
+                                <div id="stageResultTitle" class="text-sm font-bold text-white">Siap Bermain! Pasang taruhan virtual Anda.</div>
+                                <div id="stageResultSub" class="text-xs text-gray-400">Hasil permainan ditentukan secara acak oleh sistem (Server-Validated RNG Simulation).</div>
+                            </div>
+                        </div>
+                        <span id="stageMultiplierBadge" class="font-mono text-xs px-2.5 py-1 rounded-lg bg-purple-500/20 text-purple-300 border border-purple-500/30">
+                            RTP Config: 100%
+                        </span>
+                    </div>
+
+                    <!-- ===================================================== -->
+                    <!-- GAME STAGE A: SLOT MACHINE                            -->
+                    <!-- ===================================================== -->
+                    <div id="stage-slot" class="game-stage space-y-6 my-auto">
+                        <!-- Slot Machine Frame -->
+                        <div class="max-w-xl mx-auto bg-gradient-to-b from-purple-950 via-casino-bg to-purple-950 p-6 rounded-3xl border-2 border-amber-400/60 gold-glow relative">
+                            <div class="text-center mb-4">
+                                <span class="px-3 py-0.5 rounded-full bg-amber-400/20 text-amber-300 text-[11px] font-mono uppercase tracking-widest border border-amber-400/40">
+                                    ★ ROYAL JACKPOT 777 ★
+                                </span>
+                            </div>
+
+                            <!-- 3 Reels Container -->
+                            <div class="grid grid-cols-3 gap-3 sm:gap-4 bg-black/70 p-4 rounded-2xl border border-purple-500/40 shadow-inner">
+                                <div class="h-28 sm:h-36 rounded-xl bg-gradient-to-b from-casino-surface via-casino-card to-casino-surface border border-amber-400/30 flex items-center justify-center overflow-hidden">
+                                    <span id="slotReel1" class="text-5xl sm:text-6xl select-none">💎</span>
+                                </div>
+                                <div class="h-28 sm:h-36 rounded-xl bg-gradient-to-b from-casino-surface via-casino-card to-casino-surface border border-amber-400/30 flex items-center justify-center overflow-hidden">
+                                    <span id="slotReel2" class="text-5xl sm:text-6xl select-none">7️⃣</span>
+                                </div>
+                                <div class="h-28 sm:h-36 rounded-xl bg-gradient-to-b from-casino-surface via-casino-card to-casino-surface border border-amber-400/30 flex items-center justify-center overflow-hidden">
+                                    <span id="slotReel3" class="text-5xl sm:text-6xl select-none">🍒</span>
+                                </div>
+                            </div>
+
+                            <!-- Spin Button -->
+                            <div class="mt-5 flex justify-center">
+                                <button id="btnSpinSlot" onclick="playSlotMachine()" class="w-full sm:w-2/3 btn-gold py-3.5 px-8 rounded-2xl text-base sm:text-lg tracking-wider uppercase flex items-center justify-center gap-3 shadow-xl">
+                                    <i class="fa-solid fa-play"></i> PUTAR MESIN SLOT (SPIN)
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Slot Paytable (Tabel Pembayaran PRD 4.3.A) -->
+                        <div class="bg-casino-surface/70 border border-casino-border rounded-2xl p-4">
+                            <h4 class="text-xs font-bold uppercase tracking-wider text-amber-300 mb-2.5 flex items-center gap-1.5">
+                                <i class="fa-solid fa-table-list"></i> Tabel Pembayaran (Paytable Multiplier)
+                            </h4>
+                            <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs font-mono">
+                                <div class="bg-casino-bg/80 p-2 rounded-lg border border-casino-border flex justify-between">
+                                    <span>💎 💎 💎</span> <span class="text-amber-400 font-bold">25x</span>
+                                </div>
+                                <div class="bg-casino-bg/80 p-2 rounded-lg border border-casino-border flex justify-between">
+                                    <span>7️⃣ 7️⃣ 7️⃣</span> <span class="text-amber-400 font-bold">15x</span>
+                                </div>
+                                <div class="bg-casino-bg/80 p-2 rounded-lg border border-casino-border flex justify-between">
+                                    <span>🔔 🔔 🔔</span> <span class="text-amber-400 font-bold">10x</span>
+                                </div>
+                                <div class="bg-casino-bg/80 p-2 rounded-lg border border-casino-border flex justify-between">
+                                    <span>🍀 🍀 🍀</span> <span class="text-amber-400 font-bold">6x</span>
+                                </div>
+                                <div class="bg-casino-bg/80 p-2 rounded-lg border border-casino-border flex justify-between">
+                                    <span>🍒 🍒 🍒</span> <span class="text-amber-400 font-bold">4x</span>
+                                </div>
+                                <div class="bg-casino-bg/80 p-2 rounded-lg border border-casino-border flex justify-between">
+                                    <span>🍋 🍋 🍋</span> <span class="text-amber-400 font-bold">3x</span>
+                                </div>
+                                <div class="bg-casino-bg/80 p-2 rounded-lg border border-casino-border flex justify-between">
+                                    <span>2 Simbol Sama</span> <span class="text-purple-300 font-bold">1.5x</span>
+                                </div>
+                                <div class="bg-casino-bg/80 p-2 rounded-lg border border-casino-border flex justify-between">
+                                    <span>Ada 1 💎</span> <span class="text-emerald-300 font-bold">1.2x</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- ===================================================== -->
+                    <!-- GAME STAGE B: ROYAL DICE (PRD 4.3.D)                  -->
+                    <!-- ===================================================== -->
+                    <div id="stage-dice" class="game-stage hidden space-y-6 my-auto">
+                        <!-- Dice Visual Arena -->
+                        <div class="max-w-xl mx-auto bg-gradient-to-b from-purple-950/80 to-casino-bg p-6 rounded-3xl border border-purple-500/40 text-center space-y-4">
+                            <div class="text-xs uppercase tracking-widest text-purple-300 font-semibold">Total Kedua Dadu (2 - 12)</div>
+                            
+                            <div class="flex items-center justify-center gap-6 py-3">
+                                <div id="diceBox1" class="w-24 h-24 sm:w-28 sm:h-28 rounded-2xl bg-gradient-to-br from-white to-gray-200 text-casino-bg shadow-2xl flex items-center justify-center text-5xl sm:text-6xl border-4 border-amber-400">
+                                    <i id="diceIcon1" class="fa-solid fa-dice-three text-purple-900"></i>
+                                </div>
+                                <div class="text-2xl font-bold text-amber-400">+</div>
+                                <div id="diceBox2" class="w-24 h-24 sm:w-28 sm:h-28 rounded-2xl bg-gradient-to-br from-white to-gray-200 text-casino-bg shadow-2xl flex items-center justify-center text-5xl sm:text-6xl border-4 border-amber-400">
+                                    <i id="diceIcon2" class="fa-solid fa-dice-four text-purple-900"></i>
+                                </div>
+                            </div>
+
+                            <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-casino-surface border border-casino-border">
+                                <span class="text-xs text-gray-400">Total Dadu Terakhir:</span>
+                                <span id="diceSumBadge" class="font-mono font-bold text-lg text-amber-400">7</span>
+                            </div>
+                        </div>
+
+                        <!-- Dice Bet Options -->
+                        <div class="space-y-3">
+                            <label class="text-xs font-semibold uppercase tracking-wider text-gray-300 block">1. Pilih Prediksi Rentang / Paritas:</label>
+                            <div class="grid grid-cols-2 sm:grid-cols-5 gap-2.5">
+                                <button onclick="selectDiceBet('under7', 'Di Bawah 7 (2-6)', 2)" id="dice-opt-under7" class="dice-bet-btn p-3 rounded-xl border border-amber-400 bg-amber-500/20 text-center transition">
+                                    <div class="font-bold text-sm text-white">Di Bawah 7</div>
+                                    <div class="text-[11px] text-gray-300">Total 2 - 6</div>
+                                    <div class="text-xs font-mono text-amber-300 font-bold mt-1">Payout 2.0x</div>
+                                </button>
+                                <button onclick="selectDiceBet('lucky7', 'Lucky 7 (Total 7)', 5)" id="dice-opt-lucky7" class="dice-bet-btn p-3 rounded-xl border border-casino-border bg-casino-surface text-center transition">
+                                    <div class="font-bold text-sm text-white">Lucky 7</div>
+                                    <div class="text-[11px] text-gray-300">Tepat Total 7</div>
+                                    <div class="text-xs font-mono text-amber-300 font-bold mt-1">Payout 5.0x</div>
+                                </button>
+                                <button onclick="selectDiceBet('over7', 'Di Atas 7 (8-12)', 2)" id="dice-opt-over7" class="dice-bet-btn p-3 rounded-xl border border-casino-border bg-casino-surface text-center transition">
+                                    <div class="font-bold text-sm text-white">Di Atas 7</div>
+                                    <div class="text-[11px] text-gray-300">Total 8 - 12</div>
+                                    <div class="text-xs font-mono text-amber-300 font-bold mt-1">Payout 2.0x</div>
+                                </button>
+                                <button onclick="selectDiceBet('even', 'Total Genap', 2)" id="dice-opt-even" class="dice-bet-btn p-3 rounded-xl border border-casino-border bg-casino-surface text-center transition">
+                                    <div class="font-bold text-sm text-white">Genap</div>
+                                    <div class="text-[11px] text-gray-300">4, 6, 8, 10, 12</div>
+                                    <div class="text-xs font-mono text-amber-300 font-bold mt-1">Payout 2.0x</div>
+                                </button>
+                                <button onclick="selectDiceBet('odd', 'Total Ganjil', 2)" id="dice-opt-odd" class="dice-bet-btn p-3 rounded-xl border border-casino-border bg-casino-surface text-center transition">
+                                    <div class="font-bold text-sm text-white">Ganjil</div>
+                                    <div class="text-[11px] text-gray-300">3, 5, 7, 9, 11</div>
+                                    <div class="text-xs font-mono text-amber-300 font-bold mt-1">Payout 2.0x</div>
+                                </button>
+                            </div>
+                        </div>
+
+                        <button id="btnRollDice" onclick="playDiceGame()" class="w-full btn-gold py-3.5 rounded-2xl text-base font-bold uppercase tracking-wider flex items-center justify-center gap-2">
+                            <i class="fa-solid fa-dice"></i> KOCOK DADU SEKARANG
+                        </button>
+                    </div>
+
+                    <!-- ===================================================== -->
+                    <!-- GAME STAGE C: EUROPEAN ROULETTE (PRD 4.3.B)           -->
+                    <!-- ===================================================== -->
+                    <div id="stage-roulette" class="game-stage hidden space-y-5 my-auto">
+                        <div class="grid grid-cols-1 md:grid-cols-12 gap-5 items-center">
+                            
+                            <!-- Animated Wheel SVG -->
+                            <div class="md:col-span-5 flex flex-col items-center justify-center">
+                                <div class="relative w-56 h-56 sm:w-64 sm:h-64 flex items-center justify-center">
+                                    <!-- Top Pointer -->
+                                    <div class="absolute -top-2 z-20 text-amber-400 text-2xl drop-shadow">
+                                        <i class="fa-solid fa-caret-down"></i>
+                                    </div>
+                                    <!-- Wheel SVG -->
+                                    <svg id="rouletteWheelSvg" viewBox="0 0 200 200" class="w-full h-full rounded-full border-4 border-amber-400 shadow-2xl bg-casino-bg">
+                                        <circle cx="100" cy="100" r="95" fill="#130b24" stroke="#fbbf24" stroke-width="3"/>
+                                        <g id="rouletteSectors"></g>
+                                        <circle cx="100" cy="100" r="34" fill="#1c1033" stroke="#fbbf24" stroke-width="3"/>
+                                    </svg>
+                                    <!-- Center Number Display -->
+                                    <div id="rouletteCenterBadge" class="absolute w-14 h-14 rounded-full bg-emerald-600 border-2 border-amber-300 flex items-center justify-center font-mono font-extrabold text-xl text-white shadow-inner">
+                                        0
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Roulette Betting Options -->
+                            <div class="md:col-span-7 space-y-3">
+                                <div class="text-xs font-semibold uppercase tracking-wider text-amber-300">Pilih Jenis Taruhan Roulette:</div>
+                                
+                                <div class="grid grid-cols-3 gap-2">
+                                    <button onclick="selectRouletteBet('red', 'Merah (Red)', 2)" id="roul-opt-red" class="roul-bet-btn p-2.5 rounded-xl bg-rose-700/80 hover:bg-rose-600 border-2 border-amber-400 text-white font-bold text-xs text-center">
+                                        MERAH (Red)<br><span class="font-mono text-[11px] text-amber-200">2.0x</span>
+                                    </button>
+                                    <button onclick="selectRouletteBet('black', 'Hitam (Black)', 2)" id="roul-opt-black" class="roul-bet-btn p-2.5 rounded-xl bg-gray-900 hover:bg-gray-800 border border-gray-600 text-white font-bold text-xs text-center">
+                                        HITAM (Black)<br><span class="font-mono text-[11px] text-amber-200">2.0x</span>
+                                    </button>
+                                    <button onclick="selectRouletteBet('zero', 'Hijau Angka 0', 35)" id="roul-opt-zero" class="roul-bet-btn p-2.5 rounded-xl bg-emerald-700/80 hover:bg-emerald-600 border border-emerald-500 text-white font-bold text-xs text-center">
+                                        HIJAU (0)<br><span class="font-mono text-[11px] text-amber-200">35.0x</span>
+                                    </button>
+                                </div>
+
+                                <div class="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                                    <button onclick="selectRouletteBet('even', 'Genap (Even)', 2)" id="roul-opt-even" class="roul-bet-btn p-2 rounded-xl bg-casino-surface border border-casino-border text-xs font-semibold text-white">
+                                        Genap (2x)
+                                    </button>
+                                    <button onclick="selectRouletteBet('odd', 'Ganjil (Odd)', 2)" id="roul-opt-odd" class="roul-bet-btn p-2 rounded-xl bg-casino-surface border border-casino-border text-xs font-semibold text-white">
+                                        Ganjil (2x)
+                                    </button>
+                                    <button onclick="selectRouletteBet('low', 'Kecil (1-18)', 2)" id="roul-opt-low" class="roul-bet-btn p-2 rounded-xl bg-casino-surface border border-casino-border text-xs font-semibold text-white">
+                                        1 - 18 (2x)
+                                    </button>
+                                    <button onclick="selectRouletteBet('high', 'Besar (19-36)', 2)" id="roul-opt-high" class="roul-bet-btn p-2 rounded-xl bg-casino-surface border border-casino-border text-xs font-semibold text-white">
+                                        19 - 36 (2x)
+                                    </button>
+                                </div>
+
+                                <!-- Specific Number Picker (0-36) -->
+                                <div class="bg-casino-surface p-3 rounded-xl border border-casino-border flex flex-wrap items-center justify-between gap-2">
+                                    <span class="text-xs text-gray-300">Atau Pilih Nomor Spesifik (0-36) • <strong>Payout 35x</strong>:</span>
+                                    <div class="flex items-center gap-2">
+                                        <input type="number" id="rouletteSpecificInput" min="0" max="36" placeholder="0-36"
+                                            class="w-20 px-2.5 py-1.5 rounded-lg bg-casino-bg border border-casino-border font-mono text-sm text-amber-300">
+                                        <button onclick="selectSpecificRouletteNumber()" class="px-3 py-1.5 rounded-lg bg-purple-600 hover:bg-purple-500 text-xs font-bold text-white">
+                                            Pilih Nomor
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <div class="text-xs text-gray-300 flex items-center justify-between px-1">
+                                    <span>Taruhan Aktif: <strong id="rouletteActiveBetLabel" class="text-amber-300">Merah (Red) — 2.0x</strong></span>
+                                </div>
+
+                                <button id="btnSpinRoulette" onclick="playRoulette()" class="w-full btn-gold py-3 rounded-2xl text-sm sm:text-base font-bold uppercase tracking-wider flex items-center justify-center gap-2">
+                                    <i class="fa-solid fa-rotate"></i> PUTAR RODA ROULETTE
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- ===================================================== -->
+                    <!-- GAME STAGE D: BLACKJACK 21 (PRD 4.3.C)                -->
+                    <!-- ===================================================== -->
+                    <div id="stage-blackjack" class="game-stage hidden space-y-5 my-auto">
+                        <!-- Felt Table -->
+                        <div class="bg-gradient-to-b from-emerald-950/90 via-emerald-900/50 to-casino-bg border-2 border-amber-500/40 rounded-3xl p-5 space-y-6 shadow-inner">
+                            
+                            <!-- Dealer Hand Area -->
+                            <div class="space-y-2">
+                                <div class="flex items-center justify-between text-xs">
+                                    <span class="uppercase tracking-wider text-emerald-300 font-bold flex items-center gap-1.5">
+                                        <i class="fa-solid fa-user-tie"></i> Kartu Dealer Virtual
+                                    </span>
+                                    <span id="bjDealerScore" class="font-mono font-bold px-2.5 py-0.5 rounded-full bg-black/50 text-amber-300 border border-amber-400/30">
+                                        Total: ?
+                                    </span>
+                                </div>
+                                <div id="bjDealerCards" class="min-h-[125px] sm:min-h-[145px] flex items-center justify-center gap-3 flex-wrap py-2">
+                                    <div class="text-xs text-emerald-200/60 italic">Tekan "BAGIKAN KARTU (DEAL)" untuk memulai putaran Blackjack.</div>
+                                </div>
+                            </div>
+
+                            <div class="border-t border-emerald-500/20"></div>
+
+                            <!-- Player Hand Area -->
+                            <div class="space-y-2">
+                                <div class="flex items-center justify-between text-xs">
+                                    <span class="uppercase tracking-wider text-amber-300 font-bold flex items-center gap-1.5">
+                                        <i class="fa-solid fa-user"></i> Kartu Anda
+                                    </span>
+                                    <span id="bjPlayerScore" class="font-mono font-bold px-2.5 py-0.5 rounded-full bg-black/50 text-amber-300 border border-amber-400/30">
+                                        Total: 0
+                                    </span>
+                                </div>
+                                <div id="bjPlayerCards" class="min-h-[125px] sm:min-h-[145px] flex items-center justify-center gap-3 flex-wrap py-2">
+                                    <div class="text-xs text-emerald-200/60 italic">Kartu Anda akan tampil di sini. Blackjack murni membayar 2.5x!</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Blackjack Action Buttons -->
+                        <div class="flex flex-wrap items-center justify-center gap-3">
+                            <button id="btnBjDeal" onclick="startBlackjackRound()" class="flex-1 sm:flex-none sm:min-w-[220px] btn-gold py-3 px-6 rounded-xl text-sm font-bold uppercase tracking-wider flex items-center justify-center gap-2">
+                                <i class="fa-solid fa-play"></i> BAGIKAN KARTU (DEAL)
+                            </button>
+                            <button id="btnBjHit" onclick="blackjackHit()" disabled class="px-6 py-3 rounded-xl bg-emerald-600 hover:bg-emerald-500 disabled:opacity-40 disabled:cursor-not-allowed text-white font-bold text-sm transition flex items-center gap-2">
+                                <i class="fa-solid fa-plus"></i> HIT (Tambah Kartu)
+                            </button>
+                            <button id="btnBjStand" onclick="blackjackStand()" disabled class="px-6 py-3 rounded-xl bg-amber-600 hover:bg-amber-500 disabled:opacity-40 disabled:cursor-not-allowed text-white font-bold text-sm transition flex items-center gap-2">
+                                <i class="fa-solid fa-hand"></i> STAND (Tahan)
+                            </button>
+                            <button id="btnBjDouble" onclick="blackjackDouble()" disabled class="px-5 py-3 rounded-xl bg-purple-600 hover:bg-purple-500 disabled:opacity-40 disabled:cursor-not-allowed text-white font-bold text-sm transition flex items-center gap-2">
+                                <i class="fa-solid fa-angles-up"></i> DOUBLE (2x Taruhan)
+                            </button>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+        <!-- ========================================================= -->
+        <!-- VIEW 2: PLAYER STATISTICS & GAME HISTORY (PRD Sec 4.4)    -->
+        <!-- ========================================================= -->
+        <section id="view-stats" class="hidden space-y-6">
+            <div class="flex flex-wrap items-center justify-between gap-3">
+                <div>
+                    <h2 class="font-display text-2xl font-bold text-white">Statistik Pemain & Riwayat Transaksi Virtual</h2>
+                    <p class="text-xs text-gray-400">Seluruh permainan mencatat taruhan, hasil, saldo sebelum, perubahan, dan saldo sesudah secara konsisten.</p>
+                </div>
+                <div class="flex gap-2">
+                    <select id="historyFilterGame" onchange="renderFullHistoryTable()" class="px-3 py-2 rounded-xl bg-casino-card border border-casino-border text-xs text-gray-200">
+                        <option value="all">Semua Permainan</option>
+                        <option value="Slot Machine">Slot Machine</option>
+                        <option value="Royal Dice">Royal Dice</option>
+                        <option value="Roulette">Roulette</option>
+                        <option value="Blackjack">Blackjack</option>
+                        <option value="Bonus / Sistem">Bonus / Sistem</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- 5 Detailed Stat Cards -->
+            <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
+                <div class="bg-casino-card border border-casino-border rounded-2xl p-4">
+                    <div class="text-xs text-gray-400">Total Permainan</div>
+                    <div id="statTotalGames" class="text-2xl font-mono font-bold text-white mt-1">0</div>
+                </div>
+                <div class="bg-casino-card border border-casino-border rounded-2xl p-4">
+                    <div class="text-xs text-gray-400">Menang / Kalah</div>
+                    <div id="statWinsLosses" class="text-2xl font-mono font-bold text-emerald-400 mt-1">0 / 0</div>
+                </div>
+                <div class="bg-casino-card border border-casino-border rounded-2xl p-4">
+                    <div class="text-xs text-gray-400">Persentase Menang</div>
+                    <div id="statWinRate" class="text-2xl font-mono font-bold text-amber-400 mt-1">0%</div>
+                </div>
+                <div class="bg-casino-card border border-casino-border rounded-2xl p-4">
+                    <div class="text-xs text-gray-400">Total Koin Diperoleh</div>
+                    <div id="statTotalWonCoins" class="text-2xl font-mono font-bold text-purple-300 mt-1">0</div>
+                </div>
+                <div class="bg-casino-card border border-casino-border rounded-2xl p-4 col-span-2 sm:col-span-1">
+                    <div class="text-xs text-gray-400">Saldo Saat Ini</div>
+                    <div id="statCurrentBalance" class="text-2xl font-mono font-bold text-amber-300 mt-1">10.000</div>
+                </div>
+            </div>
+
+            <!-- Full Game & Wallet Transaction Table -->
+            <div class="bg-casino-card border border-casino-border rounded-2xl overflow-hidden">
+                <div class="p-4 border-b border-casino-border flex items-center justify-between">
+                    <h3 class="font-bold text-sm text-white flex items-center gap-2">
+                        <i class="fa-solid fa-clock-rotate-left text-amber-400"></i> Tabel `game_histories` & Riwayat Transaksi Virtual
+                    </h3>
+                    <span id="historyCountLabel" class="text-xs font-mono text-gray-400">0 entri</span>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse text-xs">
+                        <thead>
+                            <tr class="bg-casino-surface text-gray-300 uppercase tracking-wider border-b border-casino-border">
+                                <th class="py-3 px-4">Waktu & ID</th>
+                                <th class="py-3 px-4">Mode Permainan</th>
+                                <th class="py-3 px-4">Detail Hasil</th>
+                                <th class="py-3 px-4 text-right">Saldo Sebelum</th>
+                                <th class="py-3 px-4 text-right">Taruhan</th>
+                                <th class="py-3 px-4 text-right">Perubahan</th>
+                                <th class="py-3 px-4 text-right">Saldo Sesudah</th>
+                            </tr>
+                        </thead>
+                        <tbody id="fullHistoryTableBody" class="divide-y divide-casino-border/60 font-mono">
+                            <!-- Injected via JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- ========================================================= -->
+        <!-- VIEW 3: LEVEL, DAILY MISSIONS, ACHIEVEMENTS & LEADERBOARD -->
+        <!-- ========================================================= -->
+        <section id="view-rewards" class="hidden space-y-6">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+                
+                <!-- Left 7 Cols: Daily Missions & Achievements -->
+                <div class="lg:col-span-7 space-y-6">
+                    <!-- Daily Missions (Misi Harian PRD 4.5) -->
+                    <div class="bg-casino-card border border-casino-border rounded-2xl p-5 space-y-4">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <h3 class="font-display font-bold text-lg text-white flex items-center gap-2">
+                                    <i class="fa-solid fa-bolt text-amber-400"></i> Misi Harian Virtual
+                                </h3>
+                                <p class="text-xs text-gray-400">Selesaikan misi permainan untuk mengklaim bonus koin virtual tambahan.</p>
+                            </div>
+                        </div>
+                        <div id="missionsContainer" class="space-y-3">
+                            <!-- Rendered by JS -->
+                        </div>
+                    </div>
+
+                    <!-- Achievements (PRD 4.5) -->
+                    <div class="bg-casino-card border border-casino-border rounded-2xl p-5 space-y-4">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <h3 class="font-display font-bold text-lg text-white flex items-center gap-2">
+                                    <i class="fa-solid fa-medal text-purple-400"></i> Koleksi Achievement
+                                </h3>
+                                <p class="text-xs text-gray-400">Lencana terbuka otomatis saat Anda mencapai milestone tertentu.</p>
+                            </div>
+                            <span id="achievementCounterBadge" class="text-xs font-mono px-2.5 py-1 rounded-lg bg-purple-500/20 text-purple-300">0 / 6 Terbuka</span>
+                        </div>
+                        <div id="achievementsGrid" class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                            <!-- Rendered by JS -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right 5 Cols: Global Virtual Leaderboard -->
+                <div class="lg:col-span-5 bg-casino-card border border-casino-border rounded-2xl p-5 space-y-4">
+                    <div class="flex items-center justify-between border-b border-casino-border pb-3">
+                        <div>
+                            <h3 class="font-display font-bold text-lg text-white flex items-center gap-2">
+                                <i class="fa-solid fa-ranking-star text-amber-400"></i> Leaderboard Sultan Virtual
+                            </h3>
+                            <p class="text-xs text-gray-400">Peringkat real-time berdasarkan total saldo koin virtual & level.</p>
+                        </div>
+                    </div>
+                    <div id="leaderboardList" class="space-y-2.5">
+                        <!-- Rendered by JS -->
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- ========================================================= -->
+        <!-- VIEW 4: ADMIN DASHBOARD & AUDIT LOGS (PRD Sec 4.6, 6, 8)  -->
+        <!-- ========================================================= -->
+        <section id="view-admin" class="hidden space-y-6">
+            <div class="bg-gradient-to-r from-amber-500/15 via-purple-900/30 to-casino-card border border-amber-400/40 rounded-2xl p-5 flex flex-wrap items-center justify-between gap-4">
+                <div>
+                    <div class="flex items-center gap-2">
+                        <span class="px-2.5 py-0.5 rounded bg-amber-400 text-casino-bg font-bold text-xs uppercase">ADMIN MODE</span>
+                        <h2 class="font-display text-xl sm:text-2xl font-bold text-white">Control Panel & Audit Trail</h2>
+                    </div>
+                    <p class="text-xs text-gray-300 mt-1">
+                        Kelola status pengguna, konfigurasi RTP/taruhan maksimum permainan, pantau metrik platform, serta lihat pencatatan <code>audit_logs</code> wajib.
+                    </p>
+                </div>
+                <button onclick="openSchemaModal()" class="px-4 py-2 rounded-xl bg-casino-surface hover:bg-purple-900/60 border border-purple-400/40 text-xs font-semibold text-purple-200 flex items-center gap-2 transition">
+                    <i class="fa-solid fa-database text-amber-400"></i> Inspeksi Skema Database (PRD Sec 8)
+                </button>
+            </div>
+
+            <!-- Admin KPI Metrics (PRD Sec 11 Success Metrics) -->
+            <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+                <div class="bg-casino-card border border-casino-border rounded-2xl p-4">
+                    <div class="text-xs text-gray-400">Total Akun Terdaftar</div>
+                    <div id="adminMetricUsers" class="text-2xl font-mono font-bold text-white mt-1">5</div>
+                    <div class="text-[11px] text-emerald-400 mt-1">100% menyelesaikan game pertama</div>
+                </div>
+                <div class="bg-casino-card border border-casino-border rounded-2xl p-4">
+                    <div class="text-xs text-gray-400">Total Sesi Permainan</div>
+                    <div id="adminMetricSessions" class="text-2xl font-mono font-bold text-amber-400 mt-1">0</div>
+                    <div class="text-[11px] text-gray-400 mt-1">0 Error • Validasi Server OK</div>
+                </div>
+                <div class="bg-casino-card border border-casino-border rounded-2xl p-4">
+                    <div class="text-xs text-gray-400">Volume Taruhan Virtual</div>
+                    <div id="adminMetricVolume" class="text-2xl font-mono font-bold text-purple-300 mt-1">0</div>
+                    <div class="text-[11px] text-gray-400 mt-1">Akumulasi koin dipertaruhkan</div>
+                </div>
+                <div class="bg-casino-card border border-casino-border rounded-2xl p-4">
+                    <div class="text-xs text-gray-400">Total Koin Beredar</div>
+                    <div id="adminMetricTotalSupply" class="text-2xl font-mono font-bold text-emerald-400 mt-1">0</div>
+                    <div class="text-[11px] text-gray-400 mt-1">Seluruh dompet pengguna</div>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+                
+                <!-- User Management Table (7 Cols) -->
+                <div class="lg:col-span-7 bg-casino-card border border-casino-border rounded-2xl overflow-hidden flex flex-col">
+                    <div class="p-4 border-b border-casino-border flex items-center justify-between">
+                        <div>
+                            <h3 class="font-bold text-sm text-white flex items-center gap-2">
+                                <i class="fa-solid fa-users-gear text-amber-400"></i> Manajemen Pengguna (`users` & `wallets`)
+                            </h3>
+                            <p class="text-[11px] text-gray-400">Ubah status akun atau sesuaikan saldo dengan pencatatan audit wajib.</p>
+                        </div>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left border-collapse text-xs">
+                            <thead>
+                                <tr class="bg-casino-surface text-gray-300 uppercase border-b border-casino-border">
+                                    <th class="py-3 px-4">Pengguna</th>
+                                    <th class="py-3 px-4">Status</th>
+                                    <th class="py-3 px-4 text-right">Saldo Virtual</th>
+                                    <th class="py-3 px-4 text-center">Permainan</th>
+                                    <th class="py-3 px-4 text-right">Aksi Admin</th>
+                                </tr>
+                            </thead>
+                            <tbody id="adminUsersTableBody" class="divide-y divide-casino-border/60">
+                                <!-- Rendered by JS -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Game Configuration Panel (5 Cols) -->
+                <div class="lg:col-span-5 bg-casino-card border border-casino-border rounded-2xl p-4 space-y-4">
+                    <div class="border-b border-casino-border pb-3">
+                        <h3 class="font-bold text-sm text-white flex items-center gap-2">
+                            <i class="fa-solid fa-sliders text-purple-400"></i> Konfigurasi Permainan (`games`)
+                        </h3>
+                        <p class="text-[11px] text-gray-400">Perubahan langsung berdampak ke meja permainan & dicatat ke Audit Log.</p>
+                    </div>
+                    <div id="adminGameConfigList" class="space-y-3">
+                        <!-- Rendered by JS -->
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Immutable Audit Logs Table (PRD Sec 6 & 8: audit_logs) -->
+            <div class="bg-casino-card border border-casino-border rounded-2xl overflow-hidden">
+                <div class="p-4 border-b border-casino-border flex flex-wrap items-center justify-between gap-2">
+                    <div>
+                        <h3 class="font-bold text-sm text-white flex items-center gap-2">
+                            <i class="fa-solid fa-file-shield text-emerald-400"></i> Pencatatan Audit Log (`audit_logs`) — Immutable Record
+                        </h3>
+                        <p class="text-[11px] text-gray-400">Sesuai Business Rules Bab 6: Setiap tindakan admin dicatat beserta waktu, aktor, perubahan, dan alasan.</p>
+                    </div>
+                    <span id="auditLogCountBadge" class="text-xs font-mono px-2.5 py-1 rounded bg-emerald-500/20 text-emerald-300">0 Log Tercatat</span>
+                </div>
+                <div class="overflow-x-auto max-h-72">
+                    <table class="w-full text-left border-collapse text-xs">
+                        <thead>
+                            <tr class="bg-casino-surface text-gray-300 uppercase border-b border-casino-border">
+                                <th class="py-2.5 px-4">Timestamp</th>
+                                <th class="py-2.5 px-4">Aktor</th>
+                                <th class="py-2.5 px-4">Tindakan</th>
+                                <th class="py-2.5 px-4">Target</th>
+                                <th class="py-2.5 px-4">Detail & Alasan Audit</th>
+                            </tr>
+                        </thead>
+                        <tbody id="adminAuditTableBody" class="divide-y divide-casino-border/60 font-mono">
+                            <!-- Rendered by JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="border-t border-casino-border bg-casino-bg/90 py-5 px-4 mt-10">
+        <div class="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-gray-400">
+            <div class="flex items-center gap-2">
+                <i class="fa-solid fa-crown text-amber-400"></i>
+                <span><strong>RoyalVegas Judi Simulator Game v1.0</strong> — Implementasi Interaktif PRD</span>
+            </div>
+            <div>
+                Hanya untuk simulasi hiburan dewasa (18+) • Tanpa Uang Sungguhan (No Real Money Gambling)
+            </div>
+        </div>
+    </footer>
+
+    <!-- ========================================================= -->
+    <!-- MODAL 1: AUTHENTICATION & PROFILE SWITCHER (PRD 4.1)      -->
+    <!-- ========================================================= -->
+    <div id="authModal" class="fixed inset-0 z-50 hidden bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="bg-casino-card border border-casino-border rounded-3xl max-w-md w-full p-6 space-y-5 shadow-2xl">
+            <div class="flex items-center justify-between border-b border-casino-border pb-3">
+                <h3 class="font-display font-bold text-lg text-white flex items-center gap-2">
+                    <i class="fa-solid fa-id-card text-amber-400"></i> Profil & Autentikasi Pemain
+                </h3>
+                <button onclick="closeAuthModal()" class="text-gray-400 hover:text-white text-lg">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+
+            <!-- Current Active User Info -->
+            <div class="bg-casino-surface border border-casino-border rounded-2xl p-4 flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                    <div class="w-12 h-12 rounded-2xl bg-gradient-to-tr from-purple-600 to-amber-500 flex items-center justify-center font-bold text-lg text-white">
+                        VIP
+                    </div>
+                    <div>
+                        <div id="modalProfileName" class="font-bold text-white">Sultan_Virtual</div>
+                        <div id="modalProfileEmail" class="text-xs text-gray-400">sultan@royalvegas.sim</div>
+                        <div id="modalProfileBalance" class="text-xs font-mono text-amber-300 mt-0.5">Saldo: 10.000 Koin</div>
+                    </div>
+                </div>
+                <span class="px-2.5 py-1 rounded-full text-[10px] font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
+                    LOGIN AKTIF
+                </span>
+            </div>
+
+            <!-- Tabs: Ganti Akun Cepat vs Registrasi Akun Baru -->
+            <div class="space-y-3">
+                <label class="text-xs font-semibold uppercase tracking-wider text-gray-300 block">Ganti Akun Cepat (Uji Coba Multi-User):</label>
+                <div id="quickSwitchUsersList" class="space-y-1.5 max-h-36 overflow-y-auto">
+                    <!-- Injected by JS -->
+                </div>
+            </div>
+
+            <div class="border-t border-casino-border pt-4 space-y-3">
+                <label class="text-xs font-semibold uppercase tracking-wider text-amber-300 block">Registrasi Pemain Baru (Saldo Awal 10.000 Koin):</label>
+                <input type="text" id="regUsernameInput" placeholder="Username baru (cth: RajaSlot99)" class="w-full px-3.5 py-2.5 rounded-xl bg-casino-bg border border-casino-border text-sm text-white">
+                <input type="email" id="regEmailInput" placeholder="Email simulasi (cth: raja@simulasi.id)" class="w-full px-3.5 py-2.5 rounded-xl bg-casino-bg border border-casino-border text-sm text-white">
+                <button onclick="registerNewUser()" class="w-full btn-gold py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider">
+                    <i class="fa-solid fa-user-plus mr-1"></i> Daftar & Klaim 10.000 Koin Awal
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========================================================= -->
+    <!-- MODAL 2: ADMIN BALANCE ADJUSTMENT WITH AUDIT REASON       -->
+    <!-- ========================================================= -->
+    <div id="adminAdjustModal" class="fixed inset-0 z-50 hidden bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="bg-casino-card border border-amber-400/50 rounded-3xl max-w-md w-full p-6 space-y-4 shadow-2xl">
+            <div class="flex items-center justify-between border-b border-casino-border pb-3">
+                <h3 class="font-display font-bold text-lg text-white flex items-center gap-2">
+                    <i class="fa-solid fa-scale-balanced text-amber-400"></i> Sesuaikan Saldo Virtual (Audit Wajib)
+                </h3>
+                <button onclick="closeAdminAdjustModal()" class="text-gray-400 hover:text-white">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+            <div class="text-xs text-gray-300">
+                Target Pengguna: <strong id="adjustTargetUsername" class="text-amber-300">-</strong>
+            </div>
+            <div class="space-y-2">
+                <label class="text-xs text-gray-300">Jumlah Penyesuaian Koin (Positif untuk tambah, Negatif untuk kurangi):</label>
+                <input type="number" id="adjustAmountInput" value="5000" step="500" class="w-full px-3.5 py-2.5 rounded-xl bg-casino-bg border border-casino-border font-mono font-bold text-white">
+            </div>
+            <div class="space-y-2">
+                <label class="text-xs text-gray-300">Alasan Audit (Wajib diisi sesuai PRD Bab 6):</label>
+                <input type="text" id="adjustReasonInput" placeholder="Contoh: Kompensasi pengujian / Bonus event turnamen" class="w-full px-3.5 py-2.5 rounded-xl bg-casino-bg border border-casino-border text-sm text-white">
+            </div>
+            <div class="flex justify-end gap-2 pt-2">
+                <button onclick="closeAdminAdjustModal()" class="px-4 py-2 rounded-xl bg-casino-surface text-xs text-gray-300">Batal</button>
+                <button onclick="submitAdminBalanceAdjustment()" class="btn-gold px-5 py-2 rounded-xl text-xs">Simpan & Catat Audit</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========================================================= -->
+    <!-- MODAL 3: DATABASE SCHEMA INSPECTOR (PRD Sec 8)            -->
+    <!-- ========================================================= -->
+    <div id="schemaModal" class="fixed inset-0 z-50 hidden bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="bg-casino-card border border-casino-border rounded-3xl max-w-3xl w-full p-6 space-y-4 shadow-2xl max-h-[85vh] flex flex-col">
+            <div class="flex items-center justify-between border-b border-casino-border pb-3">
+                <div>
+                    <h3 class="font-display font-bold text-lg text-white flex items-center gap-2">
+                        <i class="fa-solid fa-database text-amber-400"></i> Arsitektur Tabel Database (PRD Bab 8)
+                    </h3>
+                    <p class="text-xs text-gray-400">Simulasi state tabel relasional Laravel 11 + PostgreSQL/MySQL secara real-time</p>
+                </div>
+                <button onclick="closeSchemaModal()" class="text-gray-400 hover:text-white text-lg">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+            <div id="schemaInspectorGrid" class="grid grid-cols-1 sm:grid-cols-3 gap-3 overflow-y-auto pr-1">
+                <!-- Populated by JS -->
+            </div>
+        </div>
+    </div>
+
+    <!-- TOAST NOTIFICATION CONTAINER -->
+    <div id="toastContainer" class="fixed bottom-5 right-5 z-50 space-y-2 max-w-sm w-full pointer-events-none"></div>
+
+    <!-- ========================================================= -->
+    <!-- APPLICATION LOGIC & GAME ENGINE SCRIPT                    -->
+    <!-- ========================================================= -->
+
+    <!-- Modular Application Scripts -->
+    <script src="js/audio.js"></script>
+    <script src="js/state.js"></script>
+    <script src="js/games.js"></script>
+    <script src="js/admin.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>
